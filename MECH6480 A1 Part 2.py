@@ -59,8 +59,8 @@ DT = 0.01
 TOTAL_TIME = 200
 num_steps = int(TOTAL_TIME/DT)
 #NUM_STEPS = 5000
-PLOT_EVERY = 1000
-N_PRESSURE_ITS = 20
+PLOT_EVERY = 500
+N_PRESSURE_ITS = 200
 
 def UIN(x,y):
     uin = np.sin(x) * np.cos(y)
@@ -236,7 +236,7 @@ for steps in range(num_steps):
         vv = 0.5*(v[1:-1,:-1]+v[1:-1,1:]) #interpolate to cell centred velocities for v
         ax1.clear()
         vel_fig = ax1.pcolormesh(xx,yy,np.sqrt(uu**2+vv**2), shading='auto', cmap='jet')
-        #vel_fig = ax1.contourf(xx,yy, np.sqrt(uu**2+vv**2), levels=20, cmap='jet')
+        vel_fig = ax1.contourf(xx,yy, np.sqrt(uu**2+vv**2), levels=20, cmap='jet')
         vel_bar = plt.colorbar(vel_fig, ax=ax1)
         ax1.quiver(xx,yy,uu,vv)
         ax1.set_xlim(0,LX)
@@ -273,7 +273,7 @@ for steps in range(num_steps):
         ax2.set_aspect('equal')
         
         
-        plt.pause(0.01)
+        plt.pause(0.00001)
         vel_bar.remove()
         p_bar.remove()
         
@@ -290,10 +290,10 @@ for steps in range(num_steps):
         plt.annotate(f't={time:.3f}s', xy=(0.4,0.95), xycoords='figure fraction', annotation_clip=False)
 
         dif_bar = plt.colorbar(vel_dif_fig, ax=ax3) 
-        plt.pause(0.1)
+        plt.pause(0.00001)
         dif_bar.remove()
-        ax3.clear()
-    plt.show()
+        #ax3.clear()
+         # plt.show()  # Removed from inside the loop to prevent blocking
 dif_bar = plt.colorbar(vel_dif_fig, ax=ax3)
 p_bar = plt.colorbar(p_fig, ax=ax2)
 vel_bar = plt.colorbar(vel_fig, ax=ax1)
@@ -302,6 +302,9 @@ plt.annotate(Time, xy=(0.7,0.95), xycoords='figure fraction', annotation_clip=Fa
 #plt.annotate(f't={time:.3f}s', xy=(0.4,0.85), xycoords='figure fraction', annotation_clip=False)
 error = np.sqrt(uAA[int(np.pi/dx),:]**2+vAA[int(np.pi/dx),:]**2) - np.sqrt(uu[int(np.pi/dx),:]**2+vv[int(np.pi/dx),:]**2)
 plt.annotate(f't={time:.3f}s', xy=(0.4,0.95), xycoords='figure fraction', annotation_clip=False)
+print(error)
+
+plt.show()
 
 
 N12 = [ 0.02568792,  0.01054522, -0.01530462, -0.03421679, -0.04116228,

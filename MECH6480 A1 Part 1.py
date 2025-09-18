@@ -40,8 +40,8 @@ T_initial = 298
 
 #grid -Spacial 
 
-NX = 5
-NY = 5
+NX = 200
+NY = 40
 dx = LX/NX
 dy = LY/NY
 x = np.linspace(0.5*dx, LX - 0.5*dx, NX)
@@ -56,7 +56,7 @@ t_vals =[]
 sim_time = 0
 steps = 0
 t_END = 5
-DT = 1e-8
+DT = 1e-6
 PLOT_EVERY = 100
 tic = timer.time()
 start = timer.time()
@@ -73,11 +73,11 @@ ux[:,:] = np.tile(ux[0,:], (NX+1, 1))
 ux[:,0] = 0.0
 ux[:,-1] = 0.0
 
-uy = np.ones((NX+2,NY+1))
-uy[1:-1,0] = uy[1:-1,0]*u_y(y)
-uy[:,:] = np.tile(uy[0,:], (NX+2, 1))
-uy[0,:] = 0.0
-uy[-1,:] = 0.0
+#uy = np.ones((NX+2,NY+1))
+#uy[1:-1,0] = uy[1:-1,0]*u_y(y)
+#uy[:,:] = np.tile(uy[0,:], (NX+2, 1))
+#uy[0,:] = 0.0
+#uy[-1,:] = 0.0
 
 #Temp Boundary conditions
 
@@ -112,10 +112,10 @@ fig, ax1 = plt.subplots(figsize=(8,8))
 
 #fluxes 
 
-T_EW = np.zeros((NX,NY))
-T_NS = np.zeros((NX,NY))
-T_EW_c = np.zeros((NX,NY))
-T_NS_c = np.zeros((NX,NY))
+T_EW = np.zeros((NX+1,NY))
+T_NS = np.zeros((NX,NY+1))
+T_EW_c = np.zeros((NX+1,NY))
+T_NS_c = np.zeros((NX,NY+1))
 x_flux = np.zeros((NX+1,NY))
 y_flux = np.zeros((NX,NY+1))
 
@@ -177,7 +177,11 @@ while sim_time < t_END:
     T_East(T, T_EW)
     T_West(T, T_EW, T_EW_c)
     
-    T[1:-1,1:-1] = T[1:-1,1:-1] + (T_EW[:,:]+T_NS[:,:]) - (T_NS_c[:,:]+T_EW_c)
+    T[1:-1,1:-1] = T[1:-1,1:-1] - DT*((T_EW_c[1:,:]-T_EW_c[:-1,:]) +\
+                                      ((T_EW[1:,:]-T_EW[:-1,:]) +\
+                                       (T_NS[:,1:]-T_NS[:,:-1]))) /dx*dy
+    
+    #T[1:-1,1:-1] = T[1:-1,1:-1] + (T_EW[:,:]+T_NS[:,:]) - (T_NS_c[:,:]+T_EW_c)
     #T[1:-1,1:-1] = T[1:-1,1:-1] + (x_flux[:,:] + y_flux[:,:])
     sim_time += DT
     steps +=1

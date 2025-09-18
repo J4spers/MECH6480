@@ -85,8 +85,8 @@ def T_west(temp):
 
 # grid - spacial
 
-NX = 12
-NY = 12
+NX = 40
+NY = 40
 dx = LX/NX
 dy = LY/NY
 dxdy = dx*dy
@@ -243,7 +243,7 @@ for steps in range(num_steps):
     #T_north(T)
     #T_south(T)
     #T_west(T)
-    '''
+    '''n 
     T_EW[:,:] = alpha * (T[1:,1:-1] - T[:-1,1:-1])/dx
     T_NS[:,:] = alpha * (T[1:-1,1:] - T[1:-1,:-1])/dy
     
